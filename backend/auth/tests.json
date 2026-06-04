@@ -1,0 +1,23 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Wrong password returns 401",
+      "method": "POST",
+      "path": "/",
+      "body": {"password": "wrongpassword"},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Check invalid token returns 200",
+      "method": "GET",
+      "path": "/?token=invalid",
+      "expectedStatus": 200
+    }
+  ]
+}

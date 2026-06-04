@@ -99,7 +99,11 @@ const categoryColors: Record<string, string> = {
   Кадры: "bg-[hsl(36,40%,85%)] text-[hsl(0,15%,18%)]",
 };
 
-export default function Index() {
+interface IndexProps {
+  onLogout?: () => void;
+}
+
+export default function Index({ onLogout }: IndexProps) {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
@@ -120,14 +124,20 @@ export default function Index() {
             <span className="text-white/70 text-sm">Внутренний портал</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 text-sm text-white/80 cursor-pointer hover:bg-white/20 transition-colors">
             <Icon name="User" size={15} className="text-white/70" />
-            <span>Мой профиль</span>
+            <span>Сотрудник</span>
           </div>
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
-            <Icon name="Bell" size={16} className="text-white" />
-          </div>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white rounded-full px-3 py-1.5 text-sm transition-colors"
+            >
+              <Icon name="LogOut" size={14} />
+              <span>Выйти</span>
+            </button>
+          )}
         </div>
       </header>
 
