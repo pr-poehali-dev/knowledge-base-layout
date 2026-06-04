@@ -1,14 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
 const menuItems = [
-  { id: 1, icon: "BookOpen", label: "Как пользоваться БЗ" },
-  { id: 2, icon: "Building2", label: "О компании" },
-  { id: 3, icon: "HelpCircle", label: "К кому обращаться, если…" },
-  { id: 4, icon: "BookMarked", label: "Справочник" },
-  { id: 5, icon: "Library", label: "Библиотека" },
-  { id: 6, icon: "FileText", label: "Документы" },
-  { id: 7, icon: "Presentation", label: "Презентации" },
+  { id: 1, icon: "BookOpen", label: "Как пользоваться БЗ", path: "/guide" },
+  { id: 2, icon: "Building2", label: "О компании", path: "/about" },
+  { id: 3, icon: "HelpCircle", label: "К кому обращаться, если…", path: "/contacts" },
+  { id: 4, icon: "BookMarked", label: "Справочник", path: "/reference" },
+  { id: 5, icon: "Library", label: "Библиотека", path: "/library" },
+  { id: 6, icon: "FileText", label: "Документы", path: "/documents" },
+  { id: 7, icon: "Presentation", label: "Презентации", path: "/presentations" },
 ];
 
 const newsItems = [
@@ -101,6 +102,7 @@ const categoryColors: Record<string, string> = {
 export default function Index() {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[hsl(var(--beige))] font-golos">
@@ -185,7 +187,7 @@ export default function Index() {
                 {menuItems.map((item, i) => (
                   <div
                     key={item.id}
-                    onClick={() => setActiveMenu(item.id)}
+                    onClick={() => { setActiveMenu(item.id); navigate(item.path); }}
                     style={{ animationDelay: `${0.1 + i * 0.05}s` }}
                     className={`menu-item animate-fade-in-up ${activeMenu === item.id ? "active" : ""}`}
                   >
