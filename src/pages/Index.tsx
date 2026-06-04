@@ -309,60 +309,7 @@ export default function Index() {
             </div>
           </main>
 
-          {/* Правая колонка — быстрые ссылки */}
-          <aside className="w-[200px] flex-shrink-0">
-            <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-              <div className="px-4 py-3 border-b border-border bg-[hsl(var(--beige-dark))]">
-                <span className="text-xs font-semibold uppercase tracking-widest text-[hsl(var(--muted-foreground))]">
-                  Быстрый доступ
-                </span>
-              </div>
-              <div className="p-3 space-y-1">
-                {[
-                  { icon: "Phone", label: "Телефонный справочник" },
-                  { icon: "Map", label: "Схема офиса" },
-                  { icon: "CalendarDays", label: "Календарь событий" },
-                  { icon: "HelpCircle", label: "FAQ" },
-                  { icon: "MessageSquare", label: "Задать вопрос" },
-                ].map((link, i) => (
-                  <button
-                    key={i}
-                    style={{ animationDelay: `${0.3 + i * 0.05}s` }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md text-xs font-medium text-foreground/80 hover:bg-[hsl(var(--burgundy-pale))] hover:text-[hsl(var(--burgundy))] transition-all duration-200 text-left animate-fade-in-up"
-                  >
-                    <Icon
-                      name={link.icon}
-                      size={14}
-                      className="text-[hsl(var(--burgundy))] flex-shrink-0"
-                      fallback="Link"
-                    />
-                    <span className="leading-tight">{link.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
 
-            {/* Статистика */}
-            <div className="mt-5 bg-[hsl(var(--burgundy))] rounded-xl shadow-sm overflow-hidden animate-fade-in-up p-4" style={{ animationDelay: "0.45s" }}>
-              <p className="text-white/60 text-[10px] uppercase tracking-widest font-semibold mb-3">
-                База знаний
-              </p>
-              <div className="space-y-3">
-                {[
-                  { label: "Документов", value: "1 240" },
-                  { label: "Разделов", value: "7" },
-                  { label: "Обновлений за месяц", value: "38" },
-                ].map((stat) => (
-                  <div key={stat.label} className="flex items-baseline justify-between">
-                    <span className="text-white/60 text-xs">{stat.label}</span>
-                    <span className="text-white font-semibold text-sm font-cormorant">
-                      {stat.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
 
