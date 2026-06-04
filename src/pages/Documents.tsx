@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Icon from "@/components/ui/icon";
+import { publicApi } from "@/lib/publicApi";
 
 type DocType = "PDF" | "DOCX" | "XLSX";
 
@@ -228,10 +229,47 @@ export default function Documents() {
   const [search, setSearch] = useState("");
   const [sampleDoc, setSampleDoc] = useState<Doc | null>(null);
   const [filterTemplates, setFilterTemplates] = useState(false);
+  const [dbDocs, setDbDocs] = useState<typeof categories | null>(null);
+
+  useEffect(() => {
+    publicApi.getDocuments().then((data: Array<{id: number; title: string; description: string; category: string; file_type: string; file_size: string; file_url: string; version: string; is_template: boolean; updated_at: string}>) => {
+      if (!Array.isArray(data) || data.length === 0) return;
+      // Группируем по категориям
+      const map = new Map<string, typeof categories[0]>();
+      const catMeta: Record<string, { icon: string; desc: string }> = {
+        "Кадровые документы":            { icon: "Users",       desc: "Заявления, приказы, регламенты по работе с персоналом" },
+        "Финансовые документы":          { icon: "Calculator",  desc: "Авансовые отчёты, акты, заявки на оплату" },
+        "Юридические документы":         { icon: "Scale",       desc: "Договоры, соглашения, политики" },
+        "Безопасность и охрана труда":   { icon: "ShieldCheck", desc: "Инструктажи, инструкции, регламенты безопасности" },
+      };
+      data.forEach((d) => {
+        const cat = d.category || "Прочее";
+        if (!map.has(cat)) {
+          const meta = catMeta[cat] || { icon: "Folder", desc: cat };
+          map.set(cat, { id: cat.toLowerCase().replace(/\s+/g, "-"), label: cat, icon: meta.icon, desc: meta.desc, docs: [] });
+        }
+        map.get(cat)!.docs.push({
+          id: d.id,
+          title: d.title,
+          type: (d.file_type as DocType) || "PDF",
+          size: d.file_size || "",
+          updated: d.updated_at?.slice(0, 10) || "",
+          version: d.version || "1.0",
+          desc: d.description || "",
+          hasTemplate: d.is_template,
+          hot: false,
+          isTemplate: d.is_template,
+        });
+      });
+      setDbDocs(Array.from(map.values()));
+    }).catch(() => {});
+  }, []);
+
+  const activeCategories = dbDocs ?? categories;
 
   const visibleCategories = activeCategory === "all"
-    ? categories
-    : categories.filter((c) => c.id === activeCategory);
+    ? activeCategories
+    : activeCategories.filter((c) => c.id === activeCategory);
 
   const filterDoc = (doc: Doc) => {
     const matchSearch = search === "" || doc.title.toLowerCase().includes(search.toLowerCase());
@@ -239,7 +277,7 @@ export default function Documents() {
     return matchSearch && matchTemplate;
   };
 
-  const totalDocs = categories.reduce((acc, c) => acc + c.docs.length, 0);
+  const totalDocs = activeCategories.reduce((acc, c) => acc + c.docs.length, 0);
 
   return (
     <Layout title="Документы" subtitle="Регламенты, шаблоны и официальные формы" icon="FileText">
@@ -283,7 +321,7 @@ export default function Documents() {
           >
             Все категории
           </button>
-          {categories.map((cat) => (
+          {activeCategories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}

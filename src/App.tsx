@@ -13,6 +13,7 @@ import Library from "./pages/Library";
 import Documents from "./pages/Documents";
 import Presentations from "./pages/Presentations";
 import Login from "./pages/Login";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,8 +33,11 @@ function AppRoutes() {
     );
   }
 
-  // Не авторизован — только страница входа
+  // Не авторизован — /admin открыт отдельно, остальное — логин
   if (!isAuth) {
+    if (window.location.pathname.startsWith("/admin")) {
+      return <BrowserRouter><Routes><Route path="/admin" element={<Admin />} /><Route path="*" element={<Login onSuccess={login} />} /></Routes></BrowserRouter>;
+    }
     return <Login onSuccess={login} />;
   }
 
@@ -41,6 +45,7 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/admin" element={<Admin />} />
         <Route path="/" element={<Index onLogout={logout} />} />
         <Route path="/guide" element={<Guide />} />
         <Route path="/about" element={<About />} />

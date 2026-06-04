@@ -1,3 +1,5 @@
 {
+  "public-api": "https://functions.poehali.dev/2a8a0d46-c0b1-4715-8c84-97aa25a00564",
+  "admin-api": "https://functions.poehali.dev/6e3b106d-9a9b-4a88-9bf2-579ae62e3747",
   "auth": "https://functions.poehali.dev/ae83f468-2bd3-419a-a5bf-c1b12d8b3c79"
 }

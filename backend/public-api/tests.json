@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get employees returns 200",
+      "method": "GET",
+      "path": "/?resource=employees",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get news returns 200",
+      "method": "GET",
+      "path": "/?resource=news",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get documents returns 200",
+      "method": "GET",
+      "path": "/?resource=documents",
+      "expectedStatus": 200
+    }
+  ]
+}

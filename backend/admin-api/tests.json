@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Auth with wrong password",
+      "method": "POST",
+      "path": "/?resource=auth",
+      "body": {"password": "wrongpassword"},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Employees without token returns 403",
+      "method": "GET",
+      "path": "/?resource=employees",
+      "expectedStatus": 403
+    },
+    {
+      "name": "News without token returns 403",
+      "method": "GET",
+      "path": "/?resource=news",
+      "expectedStatus": 403
+    }
+  ]
+}

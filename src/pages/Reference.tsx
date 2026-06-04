@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Icon from "@/components/ui/icon";
+import { publicApi } from "@/lib/publicApi";
 
 interface Employee {
   id: number;
@@ -111,14 +112,44 @@ const avatarColors = [
   "hsl(280,30%,40%)", "hsl(20,60%,40%)", "hsl(180,35%,35%)", "hsl(45,60%,38%)",
 ];
 
-type Employee = typeof allEmployees[0];
-
 export default function Reference() {
   const [search, setSearch] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [dbEmployees, setDbEmployees] = useState<Employee[] | null>(null);
+
+  useEffect(() => {
+    publicApi.getEmployees().then((data: Employee[]) => {
+      if (Array.isArray(data) && data.length > 0) setDbEmployees(data);
+    }).catch(() => {});
+  }, []);
+
+  // Используем данные из БД если есть, иначе статику
+  const allEmployees = dbEmployees ?? locationGroups.flatMap((g) => g.employees);
+
+  // Группируем по location
+  const groupMap = new Map<string, Employee[]>();
+  allEmployees.forEach((e) => {
+    if (!groupMap.has(e.location)) groupMap.set(e.location, []);
+    groupMap.get(e.location)!.push(e);
+  });
+
+  // Офис всегда первым, остальные сортируем
+  const sortedLocations = Array.from(groupMap.keys()).sort((a, b) => {
+    if (a === "Офис") return -1;
+    if (b === "Офис") return 1;
+    return a.localeCompare(b, "ru");
+  });
+
+  const dynamicGroups = sortedLocations.map((loc) => ({
+    id: loc.toLowerCase().replace(/\s+/g, "-"),
+    label: loc,
+    icon: loc === "Офис" ? "Building2" : "MapPin",
+    employees: groupMap.get(loc) || [],
+  }));
+
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
-    new Set(locationGroups.slice(1).map((g) => g.id)) // объекты свёрнуты по умолчанию
+    new Set(dynamicGroups.slice(1).map((g) => g.id))
   );
 
   const q = search.toLowerCase().trim();
@@ -221,7 +252,7 @@ export default function Reference() {
           ) : (
             /* Режим групп по объектам */
             <div className="space-y-3">
-              {locationGroups.map((group) => {
+              {dynamicGroups.map((group) => {
                 const isCollapsed = collapsedGroups.has(group.id);
                 return (
                   <div key={group.id} className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">

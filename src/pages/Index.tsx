@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "@/components/ui/icon";
+import { publicApi } from "@/lib/publicApi";
 
 const menuItems = [
   { id: 1, icon: "BookOpen", label: "Как пользоваться БЗ", path: "/guide" },
@@ -107,6 +108,24 @@ export default function Index({ onLogout }: IndexProps) {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const [dbNews, setDbNews] = useState<typeof newsItems | null>(null);
+
+  useEffect(() => {
+    publicApi.getNews().then((data: Array<{id: number; title: string; excerpt: string; category: string; published_at: string}>) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setDbNews(data.map(n => ({
+          id: n.id,
+          title: n.title,
+          excerpt: n.excerpt || "",
+          category: n.category,
+          author: "",
+          date: new Date(n.published_at).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }),
+        })));
+      }
+    }).catch(() => {});
+  }, []);
+
+  const displayNews = dbNews ?? newsItems;
 
   return (
     <div className="min-h-screen bg-[hsl(var(--beige))] font-golos">
@@ -274,7 +293,7 @@ export default function Index({ onLogout }: IndexProps) {
                 </button>
               </div>
               <div className="divide-y divide-border">
-                {newsItems.map((item, i) => (
+                {displayNews.map((item, i) => (
                   <article
                     key={item.id}
                     style={{ animationDelay: `${0.2 + i * 0.06}s` }}

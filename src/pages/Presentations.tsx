@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Icon from "@/components/ui/icon";
+import { publicApi } from "@/lib/publicApi";
 
 interface Presentation {
   id: number;
@@ -219,15 +220,43 @@ function PreviewModal({ pres, onClose }: PreviewModalProps) {
   );
 }
 
+const accentColors = [
+  "hsl(350,60%,28%)", "hsl(210,45%,38%)", "hsl(36,60%,38%)",
+  "hsl(130,40%,35%)", "hsl(280,30%,40%)", "hsl(20,60%,38%)",
+];
+const slidePatterns: Presentation["slidePattern"][] = ["grid", "lines", "dots", "diagonal"];
+
 export default function Presentations() {
   const [activeCategory, setActiveCategory] = useState("Все");
   const [activeAudience, setActiveAudience] = useState<"all" | "internal" | "external">("all");
   const [preview, setPreview] = useState<Presentation | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+  const [dbPresentations, setDbPresentations] = useState<Presentation[] | null>(null);
 
-  const categories = ["Все", ...Array.from(new Set(presentations.map((p) => p.category)))];
+  useEffect(() => {
+    publicApi.getPresentations().then((data: Array<{id: number; title: string; description: string; category: string; audience: string; slides_count: number; file_size: string; file_url: string; author: string; is_new: boolean; updated_at: string}>) => {
+      if (!Array.isArray(data) || data.length === 0) return;
+      setDbPresentations(data.map((p, i) => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        audience: (p.audience === "external" ? "external" : "internal") as "internal" | "external",
+        slides: p.slides_count || 0,
+        updated: p.updated_at?.slice(0, 10) || "",
+        size: p.file_size || "",
+        author: p.author || "",
+        desc: p.description || "",
+        isNew: p.is_new,
+        accent: accentColors[i % accentColors.length],
+        slidePattern: slidePatterns[i % slidePatterns.length],
+      })));
+    }).catch(() => {});
+  }, []);
 
-  const filtered = presentations.filter((p) => {
+  const activePresentations = dbPresentations ?? presentations;
+  const categories = ["Все", ...Array.from(new Set(activePresentations.map((p) => p.category)))];
+
+  const filtered = activePresentations.filter((p) => {
     const matchCat = activeCategory === "Все" || p.category === activeCategory;
     const matchAud = activeAudience === "all" || p.audience === activeAudience;
     return matchCat && matchAud;
