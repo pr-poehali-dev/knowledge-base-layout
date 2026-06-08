@@ -129,6 +129,10 @@ export default function Index({ onLogout }: IndexProps) {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--beige))] font-golos">
+      {/* Логотип */}
+      <div className="bg-white border-b border-border flex justify-center py-3 px-8">
+        <img src="https://cdn.poehali.dev/projects/0d42a986-1ae9-4f41-83dc-94e6dd5ae356/bucket/7be16993-63ef-4cda-b9ce-2a4d9fc96b18.png" alt="Помощь УК" className="h-10 object-contain" />
+      </div>
       {/* Шапка */}
       <header className="bg-[hsl(var(--burgundy))] text-[hsl(var(--primary-foreground))] px-8 py-4 flex items-center justify-between shadow-md animate-fade-in">
         <div className="flex items-center gap-3">
