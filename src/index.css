@@ -13,7 +13,7 @@
     --popover: 36 30% 98%;
     --popover-foreground: 0 15% 18%;
 
-    --primary: 350 60% 28%;
+    --primary: 270 50% 30%;
     --primary-foreground: 36 33% 96%;
 
     --secondary: 36 25% 90%;
@@ -22,7 +22,7 @@
     --muted: 36 20% 91%;
     --muted-foreground: 0 10% 45%;
 
-    --accent: 350 60% 28%;
+    --accent: 270 50% 30%;
     --accent-foreground: 36 33% 96%;
 
     --destructive: 0 84.2% 60.2%;
@@ -30,14 +30,14 @@
 
     --border: 36 20% 84%;
     --input: 36 20% 84%;
-    --ring: 350 60% 28%;
+    --ring: 270 50% 30%;
 
     --radius: 0.375rem;
 
-    /* Бордовый */
-    --burgundy: 350 60% 28%;
-    --burgundy-light: 350 50% 38%;
-    --burgundy-pale: 350 40% 92%;
+    /* Royal Velvet */
+    --burgundy: 270 50% 30%;
+    --burgundy-light: 270 45% 42%;
+    --burgundy-pale: 270 40% 93%;
 
     /* Бежевый */
     --beige: 36 33% 96%;
